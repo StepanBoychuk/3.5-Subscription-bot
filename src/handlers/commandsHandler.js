@@ -3,22 +3,16 @@ const logger = require("./../logger.js");
 
 const saveUserLocation = async (msg) => {
   try {
-    const user = await Subscription.findOne({ chat: msg.chat.id });
+    let user = await Subscription.findOne({ chat: msg.chat.id });
     if (!user) {
-      const newUser = new Subscription({
-        chat: msg.chat.id,
-        location: {
-          lat: msg.location.latitude,
-          long: msg.location.longitude,
-        },
-      });
-      await newUser.save();
-      return "Your location has been successfully saved.";
+      user = new Subscription({});
     }
-    user.location.lat = msg.location.latitude;
-    user.location.long = msg.location.longitude;
+    user.chat = msg.chat.id;
+    user.location = {
+      lat: msg.location.latitude,
+      long: msg.location.longitude,
+    };
     await user.save();
-    return "Your location has been successfully updated.";
   } catch (error) {
     logger.error(error);
   }
@@ -37,7 +31,7 @@ const saveForecastTime = async (msg) => {
     }
     user.forecastTime = msg.text;
     await user.save();
-    return `Your daily forecast has been changed to ${msg.text}`;
+    return `Your daily forecast time has been changed to ${msg.text}`;
   } catch (error) {
     logger.error(error);
   }
@@ -46,9 +40,6 @@ const saveForecastTime = async (msg) => {
 const infoCommand = async (msg) => {
   try {
     const user = await Subscription.findOne({ chat: msg.chat.id });
-    if (!user) {
-      return "You didn't leave any information. Try /help.";
-    }
     let isSubscribe = "You are not subscribed to daily forecast";
     if (user.sendForecast == true) {
       isSubscribe = "You are subscribed to daily forecast";
@@ -67,22 +58,12 @@ const infoCommand = async (msg) => {
 
 const subscribe = async (msg) => {
   try {
-    const user = await Subscription.findOne({ chat: msg.chat.id });
-    if (!user || !user.location || !user.forecastTime) {
-      return "Please, add location and time first. For more information press info or type /help";
-    }
-    if (user.sendForecast == false) {
-      user.sendForecast = true;
-      await user.save();
-      return "You successfully subscribed";
-    }
-    if (user.sendForecast == true) {
-      user.sendForecast = false;
-      await user.save();
-      return "You successfully unsubscibed";
-    }
+    let user = await Subscription.findOne({ chat: msg.chat.id });
+    user.sendForecast = !user.sendForecast
+    await user.save();
+    return user.sendForecast ? "You successfully subscribed": "You successfully unsubscribed"
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 };
 
