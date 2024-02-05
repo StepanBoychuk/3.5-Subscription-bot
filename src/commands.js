@@ -1,4 +1,5 @@
-const { infoCommand, subscribe } = require('./handlers/commandsHandler.js')
+const {infoResponse, subscribeResponse} = require('./handlers/messageResponseHandler.js')
+
 
 const keyboard = [["Subscription", "Info"]]
 const infoKeyboard = [["Set time", {text: "Change location", request_location:true}], ["Back"]]
@@ -23,17 +24,17 @@ const commands = {
         }
     },
     "Subscription": {
-        "text": "Changing your subsription...",
+        "text": "",
         "options": {
             "keyboard": keyboard,
-            "func": subscribe
+            "func": subscribeResponse
         }
     },
     "Info": {
-        "text": "Here is information about your subscription:",
+        "text": "",
         "options": {
             "keyboard": infoKeyboard,
-            "func": infoCommand
+            "func": infoResponse
         }
     },
     "Back": {

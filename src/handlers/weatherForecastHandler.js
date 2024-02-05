@@ -1,4 +1,5 @@
 const getForecast = require("../getWeatherForecast");
+const logger = require("./../logger");
 
 const getWindDirection = (degrees) => {
   const direction = [
@@ -21,12 +22,13 @@ const formatTime = (Unix_timestap, timezone_offset) => {
 };
 
 const weatherForecastHandler = async (lat, long) => {
-  const weatherData = await getForecast(lat, long);
-  if (!weatherData) {
-    return "Oops, something went wrong.";
-  }
-  const todaysWeather = weatherData.data.daily[0];
-  const formattedText = `
+  try {
+    const weatherData = await getForecast(lat, long);
+    if (!weatherData) {
+      return "Oops, something went wrong.";
+    }
+    const todaysWeather = weatherData.data.daily[0];
+    const formattedText = `
     Greetings! Here's your weather forecast for today:\n
     - Sunrise: ${formatTime(
       todaysWeather.sunrise,
@@ -46,27 +48,27 @@ const weatherForecastHandler = async (lat, long) => {
     )}
     - Summary: ${todaysWeather.summary}
     During the day temperature will range from ${todaysWeather.temp.min}℃ to ${
-    todaysWeather.temp.max
-  }℃
+      todaysWeather.temp.max
+    }℃
     - In the morning ${todaysWeather.temp.morn}℃ (Feels like ${
-    todaysWeather.feels_like.morn
-  }℃)
+      todaysWeather.feels_like.morn
+    }℃)
     - By day ${todaysWeather.temp.day}℃ (Feels like ${
-    todaysWeather.feels_like.day
-  }℃)
+      todaysWeather.feels_like.day
+    }℃)
     - In the evening ${todaysWeather.temp.eve}℃ (Feels like ${
-    todaysWeather.feels_like.eve
-  }℃)
+      todaysWeather.feels_like.eve
+    }℃)
     - At night ${todaysWeather.temp.night}℃ (Feels like ${
-    todaysWeather.feels_like.night
-  }℃) \n
+      todaysWeather.feels_like.night
+    }℃) \n
     - Pressure: ${todaysWeather.pressure}hPa
     - Humidity: ${todaysWeather.humidity}%
     - Dew point: ${todaysWeather.dew_point}℃
     - Wind speed: ${todaysWeather.wind_speed} m/s
     - Wind direction: ${todaysWeather.wind_deg}° (${getWindDirection(
-    todaysWeather.wind_deg
-  )})
+      todaysWeather.wind_deg
+    )})
     - Wind gust: ${todaysWeather.wind_gust}
     - Clouds cover: ${todaysWeather.clouds}%
     - UV index: ${todaysWeather.uvi}
@@ -75,7 +77,11 @@ const weatherForecastHandler = async (lat, long) => {
     - Main weather: ${todaysWeather.weather[0].main}
     - Description: ${todaysWeather.weather[0].description}
     `;
-  return formattedText;
+    return formattedText;
+  } catch (error) {
+    logger.error(error);
+    return "Oops! Something wrong. Please, try again later";
+  }
 };
 
 module.exports = weatherForecastHandler;

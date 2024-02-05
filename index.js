@@ -7,9 +7,9 @@ const cron = require("node-cron");
 const Subscription = require("./src/models/Subscriptions.js");
 const weatherForecastHandler = require("./src/handlers/weatherForecastHandler.js");
 const {
-  saveUserLocation,
-  saveForecastTime,
-} = require("./src/handlers/commandsHandler.js");
+  locationResponse,
+  timeResponse,
+} = require("./src/handlers/messageResponseHandler.js");
 
 const token = process.env.TELEGRAM_TOKEN;
 
@@ -23,8 +23,7 @@ bot.on("location", async (msg) => {
   if (!user) {
     keyboardButton = [["Set time"]];
   }
-  await saveUserLocation(msg);
-  bot.sendMessage(msg.chat.id, "Location saved", {
+  bot.sendMessage(msg.chat.id, await locationResponse(msg), {
     reply_markup: {
       keyboard: keyboardButton,
     },
@@ -52,7 +51,7 @@ bot.on("text", async (msg) => {
   }
   const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
   if (timeRegex.test(msg.text)) {
-    return bot.sendMessage(msg.chat.id, await saveForecastTime(msg), {
+    return bot.sendMessage(msg.chat.id, await timeResponse(msg), {
       reply_markup: {
         keyboard: keyboard,
       },
