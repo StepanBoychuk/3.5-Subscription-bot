@@ -29,17 +29,20 @@ const timeResponse = async (msg) => {
 const infoResponse = async (msg) => {
   try {
     const user = await Subscription.findOne({ chat: msg.chat.id });
-    let isSubscribe = "You are not subscribed to daily forecast";
-    if (user.sendForecast == true) {
-      isSubscribe = "You are subscribed to daily forecast";
+    if (user) {
+      let isSubscribe = "You are not subscribed to daily forecast";
+      if (user.sendForecast == true) {
+        isSubscribe = "You are subscribed to daily forecast";
+      }
+      return `
+        Location: 
+        latitude: ${user.location.lat}
+        longitude: ${user.location.long} \n
+        Daily forecast time: ${user.forecastTime}
+        Subscription: ${isSubscribe}
+        `;
     }
-    return `
-      Location: 
-      latitude: ${user.location.lat}
-      longitude: ${user.location.long} \n
-      Daily forecast time: ${user.forecastTime}
-      Subscription: ${isSubscribe}
-      `;
+    return "You didn't leave any information"
   } catch (error) {
     logger.error(error);
     return "Oops! Something wrong. Please, try again later";

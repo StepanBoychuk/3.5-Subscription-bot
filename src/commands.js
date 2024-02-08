@@ -12,9 +12,9 @@ const commands = {
         }
     },
     "/help": {
-        "text": `Here are list of available commands:\n Subscription: to subscripe/unsubscribe from daily forecast.\n Info: information about you subscription. Set Time: to change time for your daily forecast.\n Change location: to change location for your forecast.`,
+        "text": `Here are list of available commands:\n Subscription: to subscripe/unsubscribe from daily forecast.\n Info: information about you subscription. \n Change location: to change location for your forecast. \n Set time: tip on how to set the time of the daily forecast (Just send me the message with time in hh:mm format, f.e 08:00 or 11:45)`,
         "options": {
-            "keyboard": keyboard
+            "keyboard": []
         }
     },
     "Set time": {

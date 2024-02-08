@@ -57,6 +57,7 @@ bot.on("text", async (msg) => {
       },
     });
   }
+  return bot.sendMessage(msg.chat.id, "Unexpected command. Try /help.")
 });
 
 cron.schedule("* * * * *", async () => {
